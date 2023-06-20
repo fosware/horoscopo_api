@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 
-export const horoscopoShcema = mongoose.Schema({
+export const horoscopoSchema = mongoose.Schema({
     fecha: { 
         type: Date,
         required: true
