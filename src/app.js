@@ -2,7 +2,6 @@ import express from 'express'
 import horoscopoRoutes from './route/horoscopo.routes.js'
 import indexRoutes from './route/index.routes.js'
 
-
 const app = express()
 
 app.use(express.json())
@@ -14,5 +13,6 @@ app.use((req, res, next) => {
         message: 'endpoint not found'
     })
 } )
+
 
 export default app;
