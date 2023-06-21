@@ -13,7 +13,7 @@ export const getHoroscopos = async (req, res) => {
 export const getHoroscopo = async (req, res) => {
   const { signo } = req.params;
   const signoData = await horoscopoData(signo);
-  return res.status(200).json(signoData);
+  res.status(200).json(signoData);
 }
 
 

@@ -50,7 +50,7 @@ export async function horoscopoData(signo) {
             compatibleCon,
             colorDia
         };
-        return JSON.stringify(horoscopoData);
+        return horoscopoData;
 
     } catch (error) {
         console.log('Error al obtener el horóscopo:', error);
