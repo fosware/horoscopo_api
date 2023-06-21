@@ -1,11 +1,9 @@
-# Node API MongoDB
+# Horóscopos API - Node MongoDB 
+(En construcción)
 
 <p align="center">
   <img src="https://images.freeimages.com/clg/istock/previews/9639/96395693-zodiac-circle-with-horoscope-signs.jpg" width="500" alt="Zodiac" />
 </p>
-
-# Horóscopos API
-(En construcción)
 
 ## Consulta tu signo zodiacal: 
 
