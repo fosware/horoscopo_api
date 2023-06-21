@@ -49,3 +49,4 @@ piscis
 - Programar la inserción de datos todos los días.
 - Crear el Front.
 - Reestructurar el código.
+- Deploy.
