@@ -1,0 +1,34 @@
+body {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  width: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.image-wrapper {
+  position: relative;
+  display: grid;
+  place-items: center;
+  max-width: 100%;
+  height: auto;
+}
+
+.background-image,
+.overlay-image {
+  max-width: 100%;
+  height: auto;
+}
+
+.overlay-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

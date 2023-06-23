@@ -18,11 +18,11 @@ export const SignoSchema = mongoose.Schema({
     required: true,
   },
   fecha_inicia: {
-    type: Date,
+    type: String,
     required: true,
   },
   fecha_termina: {
-    type: Date,
+    type: String,
     required: true,
   },
   ruta_img: {

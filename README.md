@@ -12,9 +12,15 @@
 - Este objeto JSON lo graba en una BD de MongoDB.
 - Consulta la API.
 
-## Inserta todos los signos a la BD
+## Es necesario tener un cuenta en MondoBD Atlas
+Completa el archivo ```.env```
 
+## Ejecutar el archivo de semilla, para ingresar la información general de los signos:
+```
+node db/seeds/seed.js
+```
 
+## Inserta el horoscopo del día de cada signo a la BD
 ```
 http://localhost:3000/api/horoscopos/obtener-y-guardar
 
@@ -42,11 +48,10 @@ acuario,
 piscis
 ```
 
-
 ## (TODO)
 
-- Validar el insertar sólo un signo por día.
-- Programar la inserción de datos todos los días.
+- ~~Validar el insertar sólo un signo por día.~~
 - Crear el Front.
 - Reestructurar el código.
 - Deploy.
+- Programar la inserción de datos todos los días.
