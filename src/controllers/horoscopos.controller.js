@@ -1,7 +1,9 @@
 import moment from "moment";
+import _ from 'lodash';
 import mongoose from "mongoose";
 import { pool } from "../db.js";
 import { HoroscopoSchema } from "../models/horoscopo.js"; // Importa el modelo de Mongoose
+import { Signo } from "../models/signos.js"; // Importa el modelo de Mongoose
 import { horoscopoData } from "./horoscopo_data.js";
 
 const todosLosSignos = [
@@ -26,18 +28,16 @@ export const getHoroscopos = async (req, res) => {
   return res.status(200).json({ mesage: "get all horoscopos" });
 };
 
-
-export const getHoroscopo = async (req, res) => {
+/* export const getHoroscopo = async (req, res) => {
   const { signo } = req.params;
   
+console.log('buscando ', signo);
   try {
-    
     const horoscopo = await Horoscopo.findOne(
       { $text: { $search: signo } },
       { score: { $meta: "textScore" } }
     ).sort({ score: { $meta: "textScore" } });
 
-    
     if (!horoscopo) {
       return res.status(404).json({ message: "Horóscopo no encontrado." });
     }
@@ -45,11 +45,50 @@ export const getHoroscopo = async (req, res) => {
     res.status(200).json(horoscopo);
   } catch (error) {
     console.log("Error al obtener el horóscopo:", error);
+    res
+      .status(500)
+      .json({ error: "Ocurrió un error al obtener el horóscopo." });
+  }
+ };
+ */
+ 
+ export const getHoroscopo = async (req, res) => {
+  let { signo } = req.params;
+  signo = _.deburr(signo.toLowerCase()); // Convertir a minúsculas y eliminar acentos
+  console.log('Buscando horóscopo para:', signo);
+
+  try {
+    const signoObj = await Signo.findOne({ signo });
+
+    if (!signoObj) {
+      return res.status(404).json({ message: "Signo no encontrado." });
+    }
+
+    const horoscopo = await Horoscopo.findOne({ signo: signoObj._id });
+    
+    if (!horoscopo) {
+      return res.status(404).json({ message: "Horóscopo no encontrado." });
+    }
+
+    const horoscopoResponse = {
+      _id: horoscopo._id,
+      fecha: horoscopo.fecha,
+      signo: signoObj, // todo el objeto signoObj.signo, // Nombre del signo en lugar del ID
+      horoscopo: horoscopo.horoscopo,
+      numSuerte: horoscopo.numSuerte,
+      compatibleCon: horoscopo.compatibleCon,
+      colorDia: horoscopo.colorDia,
+      created_at: horoscopo.created_at,
+      __v: horoscopo.__v,
+    };
+
+    res.status(200).json(horoscopoResponse);
+    //res.status(200).json(horoscopo);
+  } catch (error) {
+    console.log("Error al obtener el horóscopo:", error);
     res.status(500).json({ error: "Ocurrió un error al obtener el horóscopo." });
   }
 };
-
-
 
 export const createHoroscopo = async (
   signo,
@@ -61,17 +100,35 @@ export const createHoroscopo = async (
 ) => {
   const fecha = moment(dia, "DD [de] MMMM, YYYY").toDate();
 
-  const horoscopoNew = new Horoscopo({
-    signo,
-    horoscopo,
-    fecha,
-    numSuerte: numerosSuerte.split(","),
-    compatibleCon,
-    colorDia,
-    created_at: new Date(),
-  });
-
   try {
+    // Buscar el signo en la colección de signos
+    const existingSigno = await Signo.findOne({ signo });
+
+    if (!existingSigno) {
+      throw new Error("El signo no existe en la colección de signos");
+    }
+
+    // Verificar si ya existe un horóscopo con la misma fecha y signo
+    const existingHoroscopo = await Horoscopo.findOne({
+      fecha,
+      signo: existingSigno._id,
+    });
+
+    if (existingHoroscopo) {
+      throw new Error("Ya existe una entrada para esa fecha y signo");
+    }
+
+    // Guardar el nuevo horóscopo con la referencia al signo
+    const horoscopoNew = new Horoscopo({
+      signo: existingSigno._id,
+      horoscopo,
+      fecha,
+      numSuerte: numerosSuerte.split(","),
+      compatibleCon,
+      colorDia,
+      created_at: new Date(),
+    });
+
     const savedHoroscopo = await horoscopoNew.save();
     return savedHoroscopo;
   } catch (error) {
@@ -82,6 +139,7 @@ export const createHoroscopo = async (
 export const obtenerYGuardarTodosLosHoroscopos = async (req, res) => {
   try {
     for (const signo of todosLosSignos) {
+      
       const signoData = await horoscopoData(signo);
       await createHoroscopo(
         signoData.signo,
