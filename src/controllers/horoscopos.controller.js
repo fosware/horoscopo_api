@@ -51,21 +51,21 @@ console.log('buscando ', signo);
   }
  };
  */
- 
- export const getHoroscopo = async (req, res) => {
+
+export const getHoroscopo = async (req, res) => {
   let { signo } = req.params;
   signo = _.deburr(signo.toLowerCase()); // Convertir a minúsculas y eliminar acentos
-  console.log('Buscando horóscopo para:', signo);
 
   try {
     const signoObj = await Signo.findOne({ signo });
+
 
     if (!signoObj) {
       return res.status(404).json({ message: "Signo no encontrado." });
     }
 
     const horoscopo = await Horoscopo.findOne({ signo: signoObj._id });
-    
+
     if (!horoscopo) {
       return res.status(404).json({ message: "Horóscopo no encontrado." });
     }
@@ -83,7 +83,7 @@ console.log('buscando ', signo);
     };
 
     res.status(200).json(horoscopoResponse);
-    //res.status(200).json(horoscopo);
+
   } catch (error) {
     console.log("Error al obtener el horóscopo:", error);
     res.status(500).json({ error: "Ocurrió un error al obtener el horóscopo." });
@@ -139,7 +139,7 @@ export const createHoroscopo = async (
 export const obtenerYGuardarTodosLosHoroscopos = async (req, res) => {
   try {
     for (const signo of todosLosSignos) {
-      
+
       const signoData = await horoscopoData(signo);
       await createHoroscopo(
         signoData.signo,
